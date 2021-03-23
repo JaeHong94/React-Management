@@ -48,6 +48,22 @@ const customers = [
 ];
 
 class App extends Component {
+  state = {
+    customers: '',
+  };
+
+  componentDidMount() {
+    this.callApi()
+      .then((res) => this.setState({ customers: res }))
+      .catch((err) => console.log(err));
+  }
+
+  callApi = async () => {
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    return body;
+  };
+
   render() {
     const { classes } = this.props;
 
@@ -65,19 +81,21 @@ class App extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {customers.map((customer) => {
-              return (
-                <Customer
-                  key={customer.id}
-                  id={customer.id}
-                  image={customer.image}
-                  name={customer.name}
-                  birthday={customer.birthday}
-                  gender={customer.gender}
-                  job={customer.job}
-                />
-              );
-            })}
+            {this.state.customers
+              ? this.state.customers.map((customer) => {
+                  return (
+                    <Customer
+                      key={customer.id}
+                      id={customer.id}
+                      image={customer.image}
+                      name={customer.name}
+                      birthday={customer.birthday}
+                      gender={customer.gender}
+                      job={customer.job}
+                    />
+                  );
+                })
+              : ''}
           </TableBody>
         </Table>
       </Paper>
